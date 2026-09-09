@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buscador de Películas</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1 class="logo">🎬 Buscador de Películas</h1>
+      <form id="search-form" class="search-form" autocomplete="off">
+        <input
+          id="search-input"
+          class="search-input"
+          type="search"
+          placeholder="Buscar por título… (ej. star, dark, titanic)"
+          aria-label="Término de búsqueda"
+        />
+        <button id="search-button" class="search-button" type="submit">Buscar</button>
+      </form>
+    </header>
+
+    <main class="content">
+      <p id="status" class="status" role="status"></p>
+      <section id="results" class="results" aria-live="polite"></section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

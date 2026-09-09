@@ -1,0 +1,20 @@
+{
+  "name": "buscadormongodb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "seed": "node scripts/seed.js",
+    "server": "node server.js",
+    "verify": "node test/verify.js",
+    "test": "npm run verify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongodb": "^7.6.0"
+  }
+}
