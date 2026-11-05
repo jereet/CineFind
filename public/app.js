@@ -5,6 +5,7 @@ const input = document.getElementById('search-input');
 const button = document.getElementById('search-button');
 const statusEl = document.getElementById('status');
 const gridEl = document.getElementById('results');
+const resultCountEl = document.getElementById('result-count');
 
 const DEBOUNCE_MS = 250;
 
@@ -24,8 +25,14 @@ function setStatus(message) {
   statusEl.textContent = message;
 }
 
+function setResultCount(count) {
+  resultCountEl.textContent = `${count} ${count === 1 ? 'resultado' : 'resultados'}`;
+  resultCountEl.classList.toggle('hidden', count === 0);
+}
+
 function loadingStatus(term) {
   gridEl.innerHTML = '';
+  setResultCount(0);
   setStatus(`Buscando «${term}»…`);
 }
 
@@ -35,6 +42,7 @@ function search() {
 
   if (!term) {
     gridEl.innerHTML = '';
+    setResultCount(0);
     setStatus('Escribí un término para buscar.');
     return;
   }
@@ -50,9 +58,19 @@ function search() {
       if (token !== requestToken) return;
       const results = data.results || [];
       if (results.length === 0) {
+        setResultCount(0);
         setStatus(`Sin resultados para «${term}».`);
+        gridEl.innerHTML = `
+          <div class="col-span-full flex flex-col items-center justify-center rounded-3xl border border-dashed border-white/10 px-6 py-20 text-center">
+            <span class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/[0.05] text-slate-500">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4M8 8l6 6M14 8l-6 6"></path></svg>
+            </span>
+            <h2 class="text-base font-medium text-slate-300">No encontramos esa película</h2>
+            <p class="mt-2 text-sm text-slate-500">Probá con otro título o una palabra más corta.</p>
+          </div>`;
         return;
       }
+      setResultCount(results.length);
       setStatus(`${results.length} resultado(s) para «${term}».`);
       renderResults(results);
     })
@@ -68,10 +86,10 @@ function renderResults(results) {
 
   for (const movie of results) {
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'group flex flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.04] transition duration-200 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.07]';
 
     const img = document.createElement('img');
-    img.className = 'card-poster';
+    img.className = 'aspect-[2/3] w-full bg-slate-900 object-cover transition duration-300 group-hover:scale-[1.03]';
     img.alt = movie.title;
     img.loading = 'lazy';
     if (movie.poster) {
@@ -84,18 +102,18 @@ function renderResults(results) {
     }
 
     const body = document.createElement('div');
-    body.className = 'card-body';
+    body.className = 'flex min-h-[112px] flex-1 flex-col gap-2 p-4';
 
     const title = document.createElement('h2');
-    title.className = 'card-title';
+    title.className = 'line-clamp-2 text-sm font-medium leading-5 text-slate-200';
     title.textContent = movie.title;
 
     const meta = document.createElement('div');
-    meta.className = 'card-meta';
+    meta.className = 'text-xs font-semibold text-violet-300';
     meta.textContent = movie.year ? String(movie.year) : '—';
 
     const genres = document.createElement('div');
-    genres.className = 'card-genres';
+    genres.className = 'mt-auto line-clamp-2 text-xs leading-4 text-slate-500';
     genres.textContent = (movie.genres || []).join(' · ') || '—';
 
     body.append(title, meta, genres);
